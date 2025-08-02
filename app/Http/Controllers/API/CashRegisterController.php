@@ -15,9 +15,10 @@ class CashRegisterController extends Controller
      */
     public function abrir(Request $request)
     {
-        $user = $request->user();
-
+         $user = $request->user();
+   
         // Validación opcional: solo usuarios con email verificado
+        
         /*
         if (!$user->hasVerifiedEmail()) {
             return response()->json(['message' => 'Debe verificar su correo.'], 403);

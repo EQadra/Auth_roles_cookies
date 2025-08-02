@@ -29,7 +29,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Usuario registrado correctamente.',
-            'user' => $user,
+            'user' => $user->only(['id', 'name', 'email']),
         ], 201);
     }
 
@@ -46,14 +46,13 @@ class AuthController extends Controller
             ]);
         }
 
-        // Regenera la sesión
         $request->session()->regenerate();
 
         $user = Auth::user();
 
         return response()->json([
             'message'   => 'Inicio de sesión exitoso',
-            'user'      => $user,
+            'user' => $request->user()->only(['id', 'name', 'email']),
             'roles'     => $user->getRoleNames(),
             'permisos'  => $user->getAllPermissions()->pluck('name'),
         ]);
@@ -61,10 +60,12 @@ class AuthController extends Controller
 
     public function profile(Request $request)
     {
+        $user = $request->user();
+
         return response()->json([
-            'user'      => $request->user(),
-            'roles'     => $request->user()->getRoleNames(),
-            'permisos'  => $request->user()->getAllPermissions()->pluck('name'),
+            'user'      => $user->only(['id', 'name', 'email']),
+            'roles'     => $user->getRoleNames(),
+            'permisos'  => $user->getAllPermissions()->pluck('name'),
         ]);
     }
 

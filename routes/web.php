@@ -15,31 +15,32 @@ use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\RolePermissionController;
 
 
-// 🌐 Página de bienvenida
-Route::get('/', function () {
-    return view('welcome');
-});
+    // 🌐 Página de bienvenida
+    Route::get('/', function () {
+        return view('welcome');
+    });
 
-// ✅ CSRF cookie (requerido para Sanctum + cookies)
-Route::middleware([EnsureFrontendRequestsAreStateful::class])
-    ->get('/sanctum/csrf-cookie', function (Request $request) {
-        return response()->noContent();
-});
+    // ✅ CSRF cookie (requerido para Sanctum + cookies)
+    Route::middleware([EnsureFrontendRequestsAreStateful::class])
+        ->get('/sanctum/csrf-cookie', function (Request $request) {
+            return response()->noContent();
+    });
 
-// 🔐 Autenticación pública
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout']);
+    // 🔐 Autenticación pública
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-// ✅ Perfil del usuario autenticado
-Route::middleware('auth')->get('/me', [AuthController::class, 'profile']);
+    // ✅ Perfil del usuario autenticado
+    Route::middleware('auth:sanctum')->get('/profile', fn (Request $req) => response()->json([
+        'user' => $req->user(),
+      ]));
 
-
-// 🔒 Rutas protegidas por sesión y permisos
-Route::middleware(['auth'])->group(function () {
-// ✅ Caja
-Route::post('/caja/abrir',  [CashRegisterController::class, 'abrir']);
-Route::post('/caja/cerrar', [CashRegisterController::class, 'cerrar']);
-Route::get('/caja/actual',  [CashRegisterController::class, 'actual']);
+// // 🔒 Rutas protegidas por sesión y permisos
+// Route::middleware(['auth'])->group(function () {
+// // ✅ Caja
+    Route::post('/caja/abrir',  [CashRegisterController::class, 'abrir']);
+    Route::post('/caja/cerrar', [CashRegisterController::class, 'cerrar']);
+    Route::get('/caja/actual',  [CashRegisterController::class, 'actual']);
 
 
     // ✅ Transacciones
@@ -63,30 +64,30 @@ Route::get('/caja/actual',  [CashRegisterController::class, 'actual']);
     // ✅ Roles y permisos con middleware Spatie
     Route::get('/roles', [RoleController::class, 'index']);
     Route::post('/roles', [RoleController::class, 'store']);
-    Route::middleware('permission:ver roles')->get('/roles/{role}', [RoleController::class, 'show']);
-    Route::middleware('permission:editar roles')->put('/roles/{role}', [RoleController::class, 'update']);
-    Route::middleware('permission:eliminar roles')->delete('/roles/{role}', [RoleController::class, 'destroy']);
+    Route::get('/roles/{role}', [RoleController::class, 'show']);
+    Route::put('/roles/{role}', [RoleController::class, 'update']);
+    Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
 
     Route::get('/permisos', [PermissionController::class, 'index']);
-    Route::middleware('permission:crear permisos')->post('/permisos', [PermissionController::class, 'store']);
-    Route::middleware('permission:ver permisos')->get('/permisos/{permission}', [PermissionController::class, 'show']);
-    Route::middleware('permission:editar permisos')->put('/permisos/{permission}', [PermissionController::class, 'update']);
-    Route::middleware('permission:eliminar permisos')->delete('/permisos/{permission}', [PermissionController::class, 'destroy']);
+    Route::post('/permisos', [PermissionController::class, 'store']);
+    Route::get('/permisos/{permission}', [PermissionController::class, 'show']);
+    Route::put('/permisos/{permission}', [PermissionController::class, 'update']);
+    Route::delete('/permisos/{permission}', [PermissionController::class, 'destroy']);
 
     // ✅ Asignar/revocar permisos a roles
-    Route::middleware('permission:asignar permisos')->post('/roles/{role}/permisos/asignar', [RolePermissionController::class, 'assignPermission']);
-    Route::middleware('permission:revocar permisos')->post('/roles/{role}/permisos/revocar', [RolePermissionController::class, 'revokePermission']);
-    Route::middleware('permission:ver permisos')->get('/roles/{role}/permisos', [RolePermissionController::class, 'permissions']);
+    Route::post('/roles/{role}/permisos/asignar', [RolePermissionController::class, 'assignPermission']);
+    Route::post('/roles/{role}/permisos/revocar', [RolePermissionController::class, 'revokePermission']);
+    Route::get('/roles/{role}/permisos', [RolePermissionController::class, 'permissions']);
 
     // ✅ Dashboard admin (solo rol admin)
-    Route::middleware('role:admin')->get('/admin/dashboard', function () {
-        return response()->json(['message' => 'Bienvenido Admin']);
-    });
+    // Route::middleware('role:admin')->get('/admin/dashboard', function () {
+    //     return response()->json(['message' => 'Bienvenido Admin']);
+    // });
 
     // ✅ Acceso por permiso
-    Route::middleware('permission:ver reportes')->get('/reportes', function () {
-        return response()->json(['message' => 'Vista de reportes']);
-    });
-});
+//     Route::middleware('permission:ver reportes')->get('/reportes', function () {
+//         return response()->json(['message' => 'Vista de reportes']);
+//     });
+// });
 
 
