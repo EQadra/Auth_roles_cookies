@@ -1,28 +1,29 @@
-<?php
+<?php  
 
-namespace App\Models;
+namespace App\Models;  
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model;  
 
-class Transaction extends Model
-{
-    protected $fillable = [
-        'cash_register_id',
-        'type',
-        'metal_type',
-        'grams',
-        'purity',
-        'discount_percentage',
-        'price_per_gram',
-        'total_pen',
-        'total_usd',
-        'exchange_rate', // ← ¡AGREGA ESTO!
-        'hora',
-        'created_by',    // ← Si usas esto, inclúyelo también
-    ];
+class Transaction extends Model  
+{  
+    protected $fillable = [  
+        'cash_register_id',  
+        'type',  
+        'grams',  
+        'purity',  
+        'discount_percentage',  
+        'price_per_gram_pen',  
+        'price_per_gram_usd',  
+        'price_per_oz',  
+        'total_pen',  
+        'total_usd',  
+        'exchange_rate',  
+        'hora',  
+        'created_by',  
+    ];  
 
-    public function cashRegister()
-    {
-        return $this->belongsTo(CashRegister::class);
-    }
+    public function cashRegister()  
+    {  
+        return $this->belongsTo(CashRegister::class);  
+    }  
 }

@@ -44,8 +44,9 @@ use App\Http\Controllers\API\RolePermissionController;
 
 
     // ✅ Transacciones
-    Route::post('/transaccion', [TransactionController::class, 'store']);
-    Route::get('/transacciones/dia', [TransactionController::class, 'day']);
+    Route::get('/transactions', [TransactionController::class, 'index']);
+    Route::get('/transactions/day', [TransactionController::class, 'day']);
+    Route::post('/transactions', [TransactionController::class, 'store']);
 
     // ✅ Productos
     Route::get('/productos',         [ProductController::class, 'index']);
